@@ -1,0 +1,47 @@
+# Cargo.toml
+[package]
+name = "pharmacy-dashboard"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "4.0"
+actix-files = "0.6"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+dotenv = "0.15"
+wasm-bindgen = "0.2"
+firebase-rs = "2.0"
+
+# Dockerfile
+FROM rust:1.70 as builder
+WORKDIR /app
+COPY . .
+RUN cargo build --release
+
+FROM debian:bullseye-slim
+WORKDIR /app
+COPY --from=builder /app/target/release/pharmacy-dashboard .
+COPY --from=builder /app/static ./static
+EXPOSE 8080
+CMD ["./pharmacy-dashboard"]
+
+# .dockerignore
+target/
+Dockerfile
+.git/
+.gitignore
+README.md
+
+# railway.toml
+[build]
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "./pharmacy-dashboard"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[service]
+ports = [8080]

@@ -1,0 +1,24 @@
+[package]
+name = "rust_wasm_railway_project"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "4.0"
+actix-files = "0.6"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+dotenv = "0.15"
+
+# You might need to add a dependency for your WASM handling
+# For example, if you're using wasm-bindgen:
+# wasm-bindgen = "0.2"
+
+[lib]
+name = "wasm_handler"
+path = "src/wasm_handler.rs"
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "rust_wasm_railway_project"
+path = "src/main.rs"
